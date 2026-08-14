@@ -1,5 +1,48 @@
 <!doctype html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>BDPedidos Â· Bakery Dreams</title><link rel="stylesheet" href="styles.css"></head>
-<body><div id="login" class="login-shell"><div class="login-card"><div class="brand-mark">BD</div><h1>BDPedidos</h1><p class="muted">Control inteligente para Bakery Dreams</p><form id="loginForm"><label>Usuario<input id="username" autocomplete="username" required></label><label>ContraseÃ±a<input id="password" type="password" autocomplete="current-password" required></label><button class="primary full">Iniciar sesiÃ³n</button></form></div></div>
-<div id="app" class="app hidden"><aside id="sidebar"><div class="side-brand"><div class="brand-mark">BD</div><div><strong>BDPedidos</strong><span>Bakery Dreams</span></div></div><nav id="nav"><button class="nav-item active" data-view="dashboard">â–¦ <span>Resumen</span></button><button class="nav-item" data-view="orders">ï¼‹ <span>RecepciÃ³n de pedidos</span></button><button class="nav-item" data-view="finance">â—’ <span>Finanzas</span></button><button class="nav-item" data-view="catalog">â–¤ <span>CatÃ¡logo</span></button></nav><div class="side-bottom"><span class="status-dot"></span> Sistema conectado<button id="logout" class="ghost">Cerrar sesiÃ³n</button></div></aside><main><header><button id="mobileMenu" class="mobile-menu" aria-label="Abrir menÃº">â˜°</button><div><p class="eyebrow">Panel de control</p><h2 id="viewTitle">Resumen general</h2></div><div class="header-actions"><span id="today"></span><button id="topLogout" class="top-logout">Cerrar sesiÃ³n</button><div class="avatar">A</div></div></header><section id="content"></section></main></div><script src="scope.js"></script><script src="app.js"></script></body></html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>BDPedidos | Bakery Dreams</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="login" class="login-shell">
+    <form id="loginForm" class="login-card">
+      <div class="brand-mark">BD</div>
+      <h1>BDPedidos</h1>
+      <p>Control de pedidos y finanzas.</p>
+      <label>Usuario<input id="username" autocomplete="username" required></label>
+      <label>Contrase&ntilde;a<input id="password" type="password" autocomplete="current-password" required></label>
+      <p id="loginError" class="error" role="alert"></p>
+      <button class="primary" type="submit">Iniciar sesi&oacute;n</button>
+    </form>
+  </section>
+  <div id="app" class="app hidden">
+    <header class="mobile-topbar">
+      <button id="mobileMenu" class="menu-button" aria-label="Abrir men&uacute;">&#9776;</button>
+      <strong>BDPedidos</strong>
+      <button id="topLogout" class="text-button">Salir</button>
+    </header>
+    <aside id="sidebar">
+      <div class="side-brand"><div class="brand-mark">BD</div><div><strong>BDPedidos</strong><span id="sidebarUser">Bakery Dreams</span></div></div>
+      <nav>
+        <button class="nav-item active" data-view="dashboard"><span>&#9638;</span> Resumen</button>
+        <button class="nav-item" data-view="orders"><span>+</span> Recepci&oacute;n de pedidos</button>
+        <button class="nav-item" data-view="finance"><span>&#36;</span> Finanzas</button>
+        <button class="nav-item" data-view="catalog"><span>&#9636;</span> Cat&aacute;logo</button>
+      </nav>
+      <div class="side-bottom"><span id="sidebarRole"></span><button id="logout" class="text-button">Cerrar sesi&oacute;n</button></div>
+    </aside>
+    <main>
+      <header class="desktop-header">
+        <div><p class="eyebrow">Panel de control</p><h2 id="viewTitle">Resumen general</h2></div>
+        <div class="header-actions"><span id="currentUserLabel"></span><span id="today"></span><div id="avatar" class="avatar">B</div></div>
+      </header>
+      <section id="content"></section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
 
