@@ -17,4 +17,5 @@
   };
   document.addEventListener('change',e=>{if(e.target&&e.target.id==='summaryPeriod'){state.summaryPeriod=e.target.value;render('dashboard')}});
 })();
+(async()=>{const saved=read('bdp-session',null);if(!saved?.access_token)return;try{state.user=saved;state.profile=read('bdp-profile',null);const rows=await api('profiles?select=display_name,role,branch&id=eq.'+saved.user.id);if(rows?.length)state.profile=rows[0];await loadRemote();if(!state.products.length)loadLocal();document.getElementById('login').classList.add('hidden');document.getElementById('app').classList.remove('hidden');showUser();render('dashboard')}catch{localStorage.removeItem('bdp-session');localStorage.removeItem('bdp-profile');state.user=null}})();
 
