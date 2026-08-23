@@ -1,0 +1,20 @@
+(function(){
+  const pad=n=>String(n).padStart(2,'0');
+  const localDate=d=>{d=d||new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+  const mondayOf=value=>{const d=new Date(value+'T12:00:00'),day=d.getDay();d.setDate(d.getDate()-(day===0?6:day-1));return localDate(d)};
+  const addDays=(value,n)=>{const d=new Date(value+'T12:00:00');d.setDate(d.getDate()+n);return localDate(d)};
+  const currentMonday=()=>mondayOf(localDate());
+  const periodList=()=>{const current=currentMonday(),dates=state.orders.concat(state.finance).map(x=>x.date||x.order_date||x.entry_date).filter(Boolean),first=dates.length?dates.reduce((a,b)=>a<b?a:b):current,start=mondayOf(first),out=[];for(let d=start;d<=current;d=addDays(d,7))out.unshift(d);if(!out.includes(current))out.unshift(current);return out};
+  const label=start=>{const end=addDays(start,6);return 'Semana '+start+' al '+end};
+  const periodRows=(start,rows)=>rows.filter(x=>{const d=x.date||x.order_date||x.entry_date;return d>=start&&d<=addDays(start,6)});
+  const periodSums=start=>{const orders=periodRows(start,state.orders),finance=periodRows(start,state.finance),sales=finance.filter(x=>(x.entry_type||x.type)==='sale').reduce((a,x)=>a+Number(x.amount||0),0),expenses=finance.filter(x=>(x.entry_type||x.type)!=='sale').reduce((a,x)=>a+Number(x.amount||0),0);return {orders,finance,purchases:orders.reduce((a,x)=>a+Number(x.total||0),0),sales,expenses,result:sales-expenses}};
+  dashboard=function(){
+    const periods=periodList(),selected=state.summaryPeriod&&periods.includes(state.summaryPeriod)?state.summaryPeriod:periods[0];
+    state.summaryPeriod=selected;
+    const x=periodSums(selected);
+    const recent=x.orders.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    return '<div class="card period-card"><div class="card-head"><div><h3>Periodo semanal</h3><p class="muted">Todos los calculos corresponden de lunes a domingo.</p></div><select id="summaryPeriod">'+periods.map(p=>'<option value="'+p+'" '+(p===selected?'selected':'')+'>'+label(p)+'</option>').join('')+'</select></div></div><div class="grid stats"><div class="card"><div class="stat-label">Compras del periodo</div><div class="stat-value">'+money(x.purchases)+'</div><div class="stat-foot">'+x.orders.length+' registros</div></div><div class="card"><div class="stat-label">Ventas del periodo</div><div class="stat-value">'+money(x.sales)+'</div><div class="stat-foot">Ingresos registrados</div></div><div class="card"><div class="stat-label">Gastos del periodo</div><div class="stat-value">'+money(x.expenses)+'</div><div class="stat-foot">Pagos registrados</div></div><div class="card"><div class="stat-label">Resultado del periodo</div><div class="stat-value '+(x.result>=0?'positive':'negative')+'">'+money(x.result)+'</div><div class="stat-foot">Ventas menos gastos</div></div></div><div class="grid two"><div class="card"><div class="card-head"><h3>Pedidos del periodo</h3><span class="pill">'+label(selected)+'</span></div>'+ (recent.length?'<div class="table-wrap"><table class="table"><tr><th>Fecha</th><th>Producto</th><th>Cantidad</th><th>Total</th></tr>'+recent.map(o=>'<tr><td>'+o.date+'</td><td>'+o.product+'</td><td>'+o.qty+'</td><td>'+money(o.total)+'</td></tr>').join('')+'</table></div>':'<div class="empty">No hay pedidos en este periodo.</div>')+'</div><div class="card"><h3>Estado del periodo</h3><p class="muted">'+x.finance.length+' movimientos financieros registrados.</p><p class="'+(x.result>=0?'positive':'negative')+'"><strong>'+money(x.result)+'</strong></p></div></div>';
+  };
+  document.addEventListener('change',e=>{if(e.target&&e.target.id==='summaryPeriod'){state.summaryPeriod=e.target.value;render('dashboard')}});
+})();
+
